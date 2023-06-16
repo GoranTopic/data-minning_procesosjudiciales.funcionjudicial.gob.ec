@@ -1,17 +1,14 @@
+import Checklist from 'checklist-js';
+import { KeyValueStore } from 'crawlee';
 import buscar_causas from './api/buscar_causas.js';
 import contar_causas from './api/contar_causas.js';
 import actuaciones_judiciales from './api/actuaciones_judiciales.js';
 import get_incidente_judicatura from './api/get_incidente_judicatura.js';
 import get_informacion_juicio from './api/get_informacion_juicio.js';
-import Checklist from 'checklist-js';
-import fs from 'fs';
-import readCSV from './../src/utils/readCSV.js';
-import hasSymbols from './../src/utils/hasSymbols.js';
-import { KeyValueStore } from 'crawlee';
-import { waitForShortTime, waitForLongTime } from './../src/utils/timers.js';
+import { waitForShortTime, waitForLongTime } from '../src/utils/timers.js';
+import readCSV from '../src/utils/readCSV.js';
 
 const filePath = './storage/cedulas/idsamples.csv';
-
 
 let cedulas = await readCSV(filePath)
 cedulas = cedulas.map(cedula => 
