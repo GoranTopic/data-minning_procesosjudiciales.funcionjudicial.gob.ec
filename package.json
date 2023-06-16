@@ -2,6 +2,7 @@
   "name": "data-minning_procesosjudiciales.funcionjudicial.gob.ec",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./src/main.js"
@@ -11,6 +12,7 @@
   "dependencies": {
     "axios": "^1.4.0",
     "checklist-js": "^1.0.7",
-    "crawlee": "^3.4.0"
+    "crawlee": "^3.4.0",
+    "csv-parser": "^3.0.0"
   }
 }

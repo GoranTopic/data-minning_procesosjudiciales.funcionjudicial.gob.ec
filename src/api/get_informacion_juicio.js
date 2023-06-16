@@ -1,12 +1,12 @@
 import axios from 'axios'; 
-import api_endpoint from '../config/endpoints.js';
+import { api_endpoint } from '../../config/endpoints.js';
 
 let endpoint = api_endpoint + '/getInformacionJuicio/';
 
 /* @param {string} judicaturaId: id de la judicatura
  *  @return: {array} arreglo de objetos con la informacion de las actuaciones judiciales
  */
-export const getInformacionJuicio = async judicaturaId => {
+export default async judicaturaId => {
     judicaturaId = judicaturaId.trim();
     try {
         const res = await axios.get(endpoint + '/' + judicaturaId);

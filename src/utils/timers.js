@@ -19,4 +19,4 @@ const shortTime = () => Math.floor(Math.random() * (3000 - 1000 + 1) + 1000);
 // just return long random time in miliseconds
 const longTime = () => Math.floor(Math.random() * (10000 - 5000 + 1) + 5000);
 
-export { shortTime, longTime };
+export { shortTime, longTime, waitForShortTime, waitForLongTime };

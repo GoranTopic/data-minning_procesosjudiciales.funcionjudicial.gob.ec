@@ -1,5 +1,5 @@
 import axios from 'axios'; 
-import api_endpoint from '../config/endpoints.js';
+import { api_endpoint } from '../../config/endpoints.js';
 
 let size = 100;
 let page = 1;
@@ -9,7 +9,7 @@ let endpoint =  api_endpoint + `/buscarCausas?page=${page}&size=${size}`;
  * {"numeroCausa":"","actor":{"cedulaActor":"","nombreActor":""},"demandado":{"cedulaDemandado":"","nombreDemandado":"TOMISLAV TOPIC"},"provincia":"","numeroFiscalia":"","recaptcha":""}
  *  @return: objeto con los datos de la causa
  */
-export const buscarCausas = async causa => {
+export default async causa => {
     try {
         const res = await axios.post(endpoint, causa);
         return res.data;
