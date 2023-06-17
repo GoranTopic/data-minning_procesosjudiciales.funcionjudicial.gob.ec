@@ -94,7 +94,7 @@ while(entry) {
     // check if there are any entries
     let numero_de_causas_como_actor = await contar_causas(user_search_query_data)
     let was_actor_causas_scraped = null;
-    if( numero_de_causas_como_actor <= 0 ){
+    if( numero_de_causas_como_actor > 0 ){
         console.log('numero_de_causas_como_actor', numero_de_causas_como_actor);
         // query every cause
         let causes = await buscar_causas(user_search_query_data);
