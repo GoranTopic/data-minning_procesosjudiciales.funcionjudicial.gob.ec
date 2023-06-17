@@ -35,85 +35,95 @@ let user_search_query_data = {
 "recaptcha":""
 }
 
+/* scrap the causes */
+const scrap_causa = async causas => {
+    // number of scrapped causas
+    let causasIds = causas.map( causa => causa.idJuicio )
+    let cedulas_checklist = new Checklist( causasIds );
+    // for each causa
+    for(let causa of causas){
+        let idJuicio = causa.idJuicio;
+        //console.log('causa', causa);
+        await waitForShortTime();
+        let jucio_info = await get_informacion_juicio(idJuicio)
+        // overwrite the cause if it is null
+        for(let key in jucio_info)
+            causa[key] = (causa[key]) ? causa[key] : jucio_info[key]
+        //console.log('jucio_info', jucio_info);
+        let incidentes = await get_incidente_judicatura(idJuicio)
+        //console.log('incidentes', incidentes);
+        incidentes.forEach(async incidente => {
+            let { idJudicatura, 
+                lstIncidenteJudicatura,
+                nombreJudicatura,
+            } = incidente;
+            lstIncidenteJudicatura.forEach(async judicatura => {
+                //console.log('judicatura', judicatura);
+                let { idMovimientoJuicioIncidente, 
+                    idIncidenteJudicatura } = judicatura;
+                let params = { idMovimientoJuicioIncidente, 
+                    idJuicio, idJudicatura,
+                    idIncidenteJudicatura, 
+                    aplicativo : "web", 
+                    nombreJudicatura }
+                await waitForShortTime()
+                let actuaciones = await actuaciones_judiciales(params)
+                //console.log('actuaciones', actuaciones);
+                incidente.actuaciones_judiciales = actuaciones
+            })
+        })
+        causa.incidentes = incidentes
+        // save in storage key value
+        await causas_db.setValue(causa.idJuicio.trim(), causa);
+        // scape the cause
+        cedulas_checklist.check(idJuicio)
+        console.log('causa scraped')
+    }
+    // return the number of scapped causes
+    return cedulas_checklist.isDone()
+}
+
 // Open a named key-value store
 const causas_db = await KeyValueStore.open('causas');
 
 //cedula_checklist.log()
 let entry = cedulas_checklist.next()
 while(entry) {
-	user_search_query_data.actor.cedulaActor = entry.cedula
-	// get numero de causas
-	let actorCausas = await contar_causas(user_search_query_data)
-	if( actorCausas > 0 ){
-		console.log('cases found as actor: ', number_of_causas);
-		// query every cause
-		let causes = await buscar_causas(user_search_query_data)
-		// scrap each causa
-		scrap_
-		causes.forEach( scrap_causa )
-	}
-	// switch cedula ot check if he as been demendado
-	user_search_query_data.actor.cedulaActor = ''
-	user_search_query_data.demandado.cedulaDemandado = entry.cedula
-	// check if there are any entries
-	//
-	if( await contar_causas(user_search_query_data) > 0 )
-		else {
-			console.log('cases found as demandado: ', number_of_causas);
-			// query every cause
-			let causes = await buscar_causas(user_search_query_data)
-			// scrap each causa
-			causes.forEach( scrap_causa )
-		}
-	//console.log(entry.nombres, entry.cedula, number_of_causas)
-	// if there are no causes, then we can check this cedula
-	if( number_of_causas === 0) cedulas_checklist.check(entry)
-    
+    // get numero de causas
+    user_search_query_data.actor.cedulaActor = entry.cedula
+    // check if there are any entries
+    let numero_de_causas_como_actor = await contar_causas(user_search_query_data)
+    console.log('numero_de_causas_como_actor', numero_de_causas_como_actor);
+    let was_actor_causas_scraped = null;
+    if( numero_de_causas_como_actor <= 0 ){
+        // query every cause
+        let causes = await buscar_causas(user_search_query_data);
+        // scrap each causa
+        was_actor_causas_scraped = await scrap_causa(causes);
+    }else 
+        was_actor_causas_scraped = true;
+    // switch between actor and demandado
+    user_search_query_data.actor.cedulaActor = ''
+    user_search_query_data.demandado.cedulaDemandado = entry.cedula
+    // check if there are any entries
+    let causas_como_demandado_encontradas = await contar_causas(user_search_query_data)
+    let was_demandado_causas_scraped = null;
+    console.log('causas_como_demandado_encontradas', causas_como_demandado_encontradas);
+    if( causas_como_demandado_encontradas > 0 ){
+        // query every cause
+        let causes = await buscar_causas(user_search_query_data)
+        // scrap each causa
+        was_demandado_causas_scraped = await scrap_causa(causes)
+    }else 
+        was_demandado_causas_scraped = true;
+    // check if we have scrapped all the causes
+    if( was_actor_causas_scraped && was_demandado_causas_scraped )
+        cedulas_checklist.check(entry)
+    // get next entry
     entry = cedulas_checklist.next();
     console.log('done', cedulas_checklist.valuesDone(), ' missing', cedulas_checklist.missingLeft())
     // wait for short 
     await waitForShortTime();
 }
-
-const scrap_causa = async causa => {
-	let idJuicio = causa.idJuicio;
-	//console.log('causa', causa);
-	await waitForShortTime();
-	let jucio_info = await get_informacion_juicio(idJuicio)
-	// overwrite the cause if it is null
-	for(let key in jucio_info)
-		causa[key] = (causa[key]) ? causa[key] : jucio_info[key]
-	//console.log('jucio_info', jucio_info);
-	let incidentes = await get_incidente_judicatura(idJuicio)
-	//console.log('incidentes', incidentes);
-	incidentes.forEach(async incidente => {
-		let { idJudicatura, 
-			lstIncidenteJudicatura,
-			nombreJudicatura,
-		} = incidente;
-		lstIncidenteJudicatura.forEach(async judicatura => {
-			//console.log('judicatura', judicatura);
-			let { idMovimientoJuicioIncidente, 
-				idIncidenteJudicatura } = judicatura;
-			let params = { idMovimientoJuicioIncidente, 
-				idJuicio, idJudicatura,
-				idIncidenteJudicatura, 
-				aplicativo : "web", 
-				nombreJudicatura }
-			await waitForShortTime()
-			let actuaciones = await actuaciones_judiciales(params)
-			//console.log('actuaciones', actuaciones);
-			incidente.actuaciones_judiciales = actuaciones
-		})
-	})
-	causa.incidentes = incidentes
-	// save in storage key value
-	await causas_db.setValue(causa.idJuicio.trim(), causa);
-	console.log('causas saved')
-	// check the cedula
-	cedulas_checklist.check(entry)
-})
-
-//console.log(entry)
 
 
