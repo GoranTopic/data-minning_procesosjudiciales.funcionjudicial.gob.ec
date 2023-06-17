@@ -121,7 +121,7 @@ while(entry) {
         cedulas_checklist.check(entry)
     // get next entry
     entry = cedulas_checklist.next();
-    console.log('done', cedulas_checklist.valuesDone(), ' out of', cedulas_checklist.missingLeft())
+    console.log('done', cedulas_checklist.valuesDone(), 'out of', cedulas_checklist.missingLeft())
     // wait for short 
     await waitForShortTime();
 }
