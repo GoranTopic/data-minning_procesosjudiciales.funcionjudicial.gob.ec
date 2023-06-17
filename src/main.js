@@ -93,9 +93,9 @@ while(entry) {
     user_search_query_data.actor.cedulaActor = entry.cedula
     // check if there are any entries
     let numero_de_causas_como_actor = await contar_causas(user_search_query_data)
-    console.log('numero_de_causas_como_actor', numero_de_causas_como_actor);
     let was_actor_causas_scraped = null;
     if( numero_de_causas_como_actor <= 0 ){
+        console.log('numero_de_causas_como_actor', numero_de_causas_como_actor);
         // query every cause
         let causes = await buscar_causas(user_search_query_data);
         // scrap each causa
@@ -108,8 +108,8 @@ while(entry) {
     // check if there are any entries
     let causas_como_demandado_encontradas = await contar_causas(user_search_query_data)
     let was_demandado_causas_scraped = null;
-    console.log('causas_como_demandado_encontradas', causas_como_demandado_encontradas);
     if( causas_como_demandado_encontradas > 0 ){
+        console.log('causas_como_demandado_encontradas', causas_como_demandado_encontradas);
         // query every cause
         let causes = await buscar_causas(user_search_query_data)
         // scrap each causa
@@ -121,7 +121,7 @@ while(entry) {
         cedulas_checklist.check(entry)
     // get next entry
     entry = cedulas_checklist.next();
-    console.log('done', cedulas_checklist.valuesDone(), ' missing', cedulas_checklist.missingLeft())
+    console.log('done', cedulas_checklist.valuesDone(), ' out of', cedulas_checklist.missingLeft())
     // wait for short 
     await waitForShortTime();
 }
