@@ -41,63 +41,78 @@ const causas_db = await KeyValueStore.open('causas');
 //cedula_checklist.log()
 let entry = cedulas_checklist.next()
 while(entry) {
-    user_search_query_data.actor.cedulaActor = entry.cedula
-    //user_search_query_data.actor.nombreActor = entry.nombres
-    let number_of_causas = await contar_causas(user_search_query_data)
-    //console.log(entry.nombres, entry.cedula, number_of_causas)
-    // if there are no causes, then we can check this cedula
-    if( number_of_causas === 0) cedulas_checklist.check(entry)
-    else {
-        // query every cause
-        let causes = await buscar_causas(user_search_query_data)
-        // proecess each caouse
-        let causa = {};
-        causes.forEach(async causa => {
-            let idJuicio = causa.idJuicio;
-            //console.log('causa', causa);
-            // wait 
-            await waitForShortTime();
-            let jucio_info = await get_informacion_juicio(idJuicio)
-            // overwrite the cause if it is null
-            for(let key in jucio_info)
-                causa[key] = (causa[key]) ? causa[key] : jucio_info[key]
-            //console.log('jucio_info', jucio_info);
-            let incidentes = await get_incidente_judicatura(idJuicio)
-            //console.log('incidentes', incidentes);
-            incidentes.forEach(async incidente => {
-                let { idJudicatura, 
-                    lstIncidenteJudicatura,
-                    nombreJudicatura,
-                } = incidente;
-                lstIncidenteJudicatura.forEach(async judicatura => {
-                    //console.log('judicatura', judicatura);
-                    let { idMovimientoJuicioIncidente, 
-                        idIncidenteJudicatura } = judicatura;
-                    let params = { idMovimientoJuicioIncidente, 
-                        idJuicio, idJudicatura,
-                        idIncidenteJudicatura, 
-                        aplicativo : "web", 
-                        nombreJudicatura }
-                    await waitForShortTime()
-                    let actuaciones = await actuaciones_judiciales(params)
-                    //console.log('actuaciones', actuaciones);
-                    incidente.actuaciones_judiciales = actuaciones
-                })
-            })
-            causa.incidentes = incidentes
-            // save in storage key value
-            await KeyValueStore.setValue(causa.idJuicio.trim(), causa);
-            // check the cedula
-            cedulas_checklist.check(entry)
-        })
-    }
+	user_search_query_data.actor.cedulaActor = entry.cedula
+	// get numero de causas
+	let actorCausas = await contar_causas(user_search_query_data)
+	if( actorCausas > 0 ){
+		console.log('cases found as actor: ', number_of_causas);
+		// query every cause
+		let causes = await buscar_causas(user_search_query_data)
+		// scrap each causa
+		scrap_
+		causes.forEach( scrap_causa )
+	}
+	// switch cedula ot check if he as been demendado
+	user_search_query_data.actor.cedulaActor = ''
+	user_search_query_data.demandado.cedulaDemandado = entry.cedula
+	// check if there are any entries
+	//
+	if( await contar_causas(user_search_query_data) > 0 )
+		else {
+			console.log('cases found as demandado: ', number_of_causas);
+			// query every cause
+			let causes = await buscar_causas(user_search_query_data)
+			// scrap each causa
+			causes.forEach( scrap_causa )
+		}
+	//console.log(entry.nombres, entry.cedula, number_of_causas)
+	// if there are no causes, then we can check this cedula
+	if( number_of_causas === 0) cedulas_checklist.check(entry)
+    
     entry = cedulas_checklist.next();
-    console.log('missing', cedulas_checklist.missingLeft())
-    console.log('done', cedulas_checklist.valuesDone())
+    console.log('done', cedulas_checklist.valuesDone(), ' missing', cedulas_checklist.missingLeft())
     // wait for short 
     await waitForShortTime();
 }
 
+const scrap_causa = async causa => {
+	let idJuicio = causa.idJuicio;
+	//console.log('causa', causa);
+	await waitForShortTime();
+	let jucio_info = await get_informacion_juicio(idJuicio)
+	// overwrite the cause if it is null
+	for(let key in jucio_info)
+		causa[key] = (causa[key]) ? causa[key] : jucio_info[key]
+	//console.log('jucio_info', jucio_info);
+	let incidentes = await get_incidente_judicatura(idJuicio)
+	//console.log('incidentes', incidentes);
+	incidentes.forEach(async incidente => {
+		let { idJudicatura, 
+			lstIncidenteJudicatura,
+			nombreJudicatura,
+		} = incidente;
+		lstIncidenteJudicatura.forEach(async judicatura => {
+			//console.log('judicatura', judicatura);
+			let { idMovimientoJuicioIncidente, 
+				idIncidenteJudicatura } = judicatura;
+			let params = { idMovimientoJuicioIncidente, 
+				idJuicio, idJudicatura,
+				idIncidenteJudicatura, 
+				aplicativo : "web", 
+				nombreJudicatura }
+			await waitForShortTime()
+			let actuaciones = await actuaciones_judiciales(params)
+			//console.log('actuaciones', actuaciones);
+			incidente.actuaciones_judiciales = actuaciones
+		})
+	})
+	causa.incidentes = incidentes
+	// save in storage key value
+	await causas_db.setValue(causa.idJuicio.trim(), causa);
+	console.log('causas saved')
+	// check the cedula
+	cedulas_checklist.check(entry)
+})
 
 //console.log(entry)
 
