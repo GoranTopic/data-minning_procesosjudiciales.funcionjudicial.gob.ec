@@ -8,17 +8,34 @@ import get_informacion_juicio from './api/get_informacion_juicio.js';
 import { waitForShortTime, waitForLongTime } from '../src/utils/timers.js';
 import readCSV from '../src/utils/readCSV.js';
 
-const filePath = './storage/cedulas/idsamples.csv';
+const filePath = './storage/cedulas/cneids.csv';
 
 let cedulas = await readCSV(filePath)
-cedulas = cedulas.map(cedula => 
-    ({ cedula: cedula['0'], nombres: cedula['NOMBRES'] })
-)
 
+cedulas = cedulas.map(cedula => {
+    try{ // if cedula states with 9 add 0 at the beginning
+        if( cedula['CEDULA'].length === 9 )
+            cedula['CEDULA'] = '0' + cedula['CEDULA']
+        return cedula['CEDULA'] 
+    }catch(e){
+        return undefined
+    }
+}).filter(
+    cedula => cedula !== undefined
+)
+/*
+ * .forEach( cedula => { 
+    if(cedula.length !== 10) 
+        console.error('cedula does not have 10 digits', cedula)
+})
+*/
+
+console.log('making checklist');
 let cedulas_checklist = new Checklist( cedulas, { 
     name: 'cedulas_checklist',
     path: process.cwd() + '/storage/',
 });
+console.log('checklist done');
 
 let user_search_query_data = {
 "numeroCausa" : "",
@@ -86,11 +103,11 @@ const scrap_causa = async causas => {
 // Open a named key-value store
 const causas_db = await KeyValueStore.open('causas');
 
-//cedula_checklist.log()
-let entry = cedulas_checklist.next()
-while(entry) {
+let cedula = cedulas_checklist.next()
+console.log('cedula', cedula);
+while(cedula) {
     // get numero de causas
-    user_search_query_data.actor.cedulaActor = entry.cedula
+    user_search_query_data.actor.cedulaActor = cedula
     // check if there are any entries
     let numero_de_causas_como_actor = await contar_causas(user_search_query_data)
     let was_actor_causas_scraped = null;
@@ -104,7 +121,7 @@ while(entry) {
         was_actor_causas_scraped = true;
     // switch between actor and demandado
     user_search_query_data.actor.cedulaActor = ''
-    user_search_query_data.demandado.cedulaDemandado = entry.cedula
+    user_search_query_data.demandado.cedulaDemandado = cedula
     // check if there are any entries
     let causas_como_demandado_encontradas = await contar_causas(user_search_query_data)
     let was_demandado_causas_scraped = null;
@@ -118,12 +135,12 @@ while(entry) {
         was_demandado_causas_scraped = true;
     // check if we have scrapped all the causes
     if( was_actor_causas_scraped && was_demandado_causas_scraped )
-        cedulas_checklist.check(entry)
+        cedulas_checklist.check({ cedula, was_actor_causas_scraped, was_demandado_causas_scraped })
     // get next entry
-    entry = cedulas_checklist.next();
+    cedula = cedulas_checklist.next();
     console.log('done', cedulas_checklist.valuesDone(), 'out of', cedulas_checklist.missingLeft())
     // wait for short 
-    await waitForShortTime();
+    //await waitForShortTime();
 }
 
 
