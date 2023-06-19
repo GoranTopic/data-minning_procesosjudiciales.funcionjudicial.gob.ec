@@ -8,7 +8,7 @@ import get_informacion_juicio from './api/get_informacion_juicio.js';
 import { waitForShortTime, waitForLongTime } from '../src/utils/timers.js';
 import readCSV from '../src/utils/readCSV.js';
 
-const filePath = './storage/cedulas/cneids_sample.csv';
+const filePath = './storage/cedulas/cneids.csv';
 
 let cedulas = await readCSV(filePath)
 
@@ -57,7 +57,7 @@ let user_search_query_data = {
 const scrap_causa = async causas => {
     // number of scrapped causas
     let causasIds = causas.map( causa => causa.idJuicio )
-    let causas_checklist = new Checklist( causasIds );
+    let cedulas_checklist = new Checklist( causasIds );
     // for each causa
     for(let causa of causas){
         let idJuicio = causa.idJuicio;
@@ -94,12 +94,11 @@ const scrap_causa = async causas => {
         // save in storage key value
         await causas_db.setValue(causa.idJuicio.trim(), causa);
         // scape the cause
-        causas_checklist.check(idJuicio)
+        cedulas_checklist.check(idJuicio)
         console.log('causa scraped')
     }
     // return the number of scapped causes
-	causas.delete();
-	return causas_checklist.isDone();
+    return cedulas_checklist.isDone()
 }
 
 // Open a named key-value store
