@@ -8,7 +8,7 @@ import get_informacion_juicio from './api/get_informacion_juicio.js';
 import { waitForShortTime, waitForLongTime } from '../src/utils/timers.js';
 import readCSV from '../src/utils/readCSV.js';
 
-const filePath = './storage/cedulas/cneids.csv';
+const filePath = './storage/cedulas/cneids_sample.csv';
 
 let cedulas = await readCSV(filePath)
 
@@ -109,34 +109,50 @@ while(cedula) {
     // get numero de causas
     user_search_query_data.actor.cedulaActor = cedula
     // check if there are any entries
+    console.log('contando causas como actor...');
     let numero_de_causas_como_actor = await contar_causas(user_search_query_data)
-    let was_actor_causas_scraped = null;
+    console.log('numero_de_causas_como_actor', numero_de_causas_como_actor);
+    let was_actor_causas_scraped;
     if( numero_de_causas_como_actor > 0 ){
         console.log('numero_de_causas_como_actor', numero_de_causas_como_actor);
         // query every cause
+        console.log('buscando causas...');
         let causes = await buscar_causas(user_search_query_data);
+        console.log('causes done')
         // scrap each causa
+        console.log('scrapeando causas...');
         was_actor_causas_scraped = await scrap_causa(causes);
+        console.log('causas scraped')
     }else 
         was_actor_causas_scraped = true;
     // switch between actor and demandado
     user_search_query_data.actor.cedulaActor = ''
     user_search_query_data.demandado.cedulaDemandado = cedula
     // check if there are any entries
+    console.log('contando causas como demandado...');
     let causas_como_demandado_encontradas = await contar_causas(user_search_query_data)
-    let was_demandado_causas_scraped = null;
+    console.log('causas_como_demandado_encontradas', causas_como_demandado_encontradas);
+    let was_demandado_causas_scraped;
     if( causas_como_demandado_encontradas > 0 ){
         console.log('causas_como_demandado_encontradas', causas_como_demandado_encontradas);
         // query every cause
+        console.log('buscando causas...');
         let causes = await buscar_causas(user_search_query_data)
+        console.log('causas encontradas', causes.length);
         // scrap each causa
+        console.log('comenzando a scrapear causas...');
         was_demandado_causas_scraped = await scrap_causa(causes)
+        console.log('causas scraped');
     }else 
         was_demandado_causas_scraped = true;
     // check if we have scrapped all the causes
-    if( was_actor_causas_scraped && was_demandado_causas_scraped )
+    if( was_actor_causas_scraped && was_demandado_causas_scraped ){
+        console.log('checking cedula as done...');
         cedulas_checklist.check(cedula, { cedula, was_actor_causas_scraped, was_demandado_causas_scraped })
+        console.log('cedula checked as done');
+    }
     // get next entry
+    console.log('getting next entry...');
     cedula = cedulas_checklist.next();
     console.log('cedula:', cedula);
     console.log('done', cedulas_checklist.valuesDone(), 'out of', cedulas_checklist.missingLeft())
