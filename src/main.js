@@ -57,7 +57,7 @@ let user_search_query_data = {
 const scrap_causa = async causas => {
     // number of scrapped causas
     let causasIds = causas.map( causa => causa.idJuicio )
-    let cedulas_checklist = new Checklist( causasIds );
+    let causas_checklist = new Checklist( causasIds );
     // for each causa
     for(let causa of causas){
         let idJuicio = causa.idJuicio;
@@ -94,11 +94,12 @@ const scrap_causa = async causas => {
         // save in storage key value
         await causas_db.setValue(causa.idJuicio.trim(), causa);
         // scape the cause
-        cedulas_checklist.check(idJuicio)
+        causas_checklist.check(idJuicio)
         console.log('causa scraped')
     }
     // return the number of scapped causes
-    return cedulas_checklist.isDone()
+	causas.delete();
+	return causas_checklist.isDone();
 }
 
 // Open a named key-value store
