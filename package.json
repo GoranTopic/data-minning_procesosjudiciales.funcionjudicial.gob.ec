@@ -5,13 +5,13 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./src/main.js"
+    "start": "node --max-old-space-size=8192 ./src/main.js"
   },
   "author": "Goran Topic",
   "license": "ISC",
   "dependencies": {
     "axios": "^1.4.0",
-    "checklist-js": "^1.0.7",
+    "checklist-js": "^1.1.7",
     "crawlee": "^3.4.0",
     "csv-parser": "^3.0.0"
   }

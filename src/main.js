@@ -29,13 +29,14 @@ cedulas = cedulas.map(cedula => {
         console.error('cedula does not have 10 digits', cedula)
 })
 */
-
-console.log('making checklist');
+console.log('numero cedulas', cedulas.length);
+console.log('making checklist...');
 let cedulas_checklist = new Checklist( cedulas, { 
     name: 'cedulas_checklist',
     path: process.cwd() + '/storage/',
 });
-console.log('checklist done');
+//cedulas_checklist.delete();
+console.log('done');
 
 let user_search_query_data = {
 "numeroCausa" : "",
@@ -104,7 +105,6 @@ const scrap_causa = async causas => {
 const causas_db = await KeyValueStore.open('causas');
 
 let cedula = cedulas_checklist.next()
-console.log('cedula', cedula);
 while(cedula) {
     // get numero de causas
     user_search_query_data.actor.cedulaActor = cedula
@@ -135,9 +135,10 @@ while(cedula) {
         was_demandado_causas_scraped = true;
     // check if we have scrapped all the causes
     if( was_actor_causas_scraped && was_demandado_causas_scraped )
-        cedulas_checklist.check({ cedula, was_actor_causas_scraped, was_demandado_causas_scraped })
+        cedulas_checklist.check(cedula, { cedula, was_actor_causas_scraped, was_demandado_causas_scraped })
     // get next entry
     cedula = cedulas_checklist.next();
+    console.log('cedula:', cedula);
     console.log('done', cedulas_checklist.valuesDone(), 'out of', cedulas_checklist.missingLeft())
     // wait for short 
     //await waitForShortTime();
