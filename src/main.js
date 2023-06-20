@@ -39,8 +39,8 @@ let cedulas_checklist = new Checklist( cedulas, {
     save_every_check: 500,
 });
 console.log('done');
-let cedulasDone = cedulas_checklist.valuesDone()
-console.log('cedulasDone', cedulasDone.length);
+let cedulasDone = cedulas_checklist.valuesDone();
+console.log('cedulasDone', cedulasDone);
 
 
 
@@ -146,7 +146,7 @@ while(cedula) {
         cedula = cedulas_checklist.next();
         // wait for short 
         //await waitForShortTime();
-        console.log('done:', 
+        console.log('done:', valuesDone, 'of', cedulas_len);
     }catch(e){
         console.error(e)
         // get next entry
