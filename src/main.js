@@ -108,39 +108,45 @@ const causas_db = await KeyValueStore.open('causas');
 
 let cedula = cedulas_checklist.next()
 while(cedula) {
-    // get numero de causas
-    user_search_query_data.actor.cedulaActor = cedula
-    // check if there are any entries
-    let numero_de_causas_como_actor = await contar_causas(user_search_query_data)
-    let was_actor_causas_scraped;
-    if( numero_de_causas_como_actor > 0 ){
-        // query every cause
-        let causes = await buscar_causas(user_search_query_data);
-        // scrap each causa
-        was_actor_causas_scraped = await scrap_causa(causes);
-    }else 
-        was_actor_causas_scraped = true;
-    // switch between actor and demandado
-    user_search_query_data.actor.cedulaActor = ''
-    user_search_query_data.demandado.cedulaDemandado = cedula
-    // check if there are any entries
-    let causas_como_demandado_encontradas = await contar_causas(user_search_query_data)
-    let was_demandado_causas_scraped;
-    if( causas_como_demandado_encontradas > 0 ){
-        // query every cause
-        let causes = await buscar_causas(user_search_query_data)
-        // scrap each causa
-        was_demandado_causas_scraped = await scrap_causa(causes)
-    }else 
-        was_demandado_causas_scraped = true;
-    // check if we have scrapped all the causes
-    if( was_actor_causas_scraped && was_demandado_causas_scraped ){
-        cedulas_checklist.check(cedula, { cedula, was_actor_causas_scraped, was_demandado_causas_scraped })
+    try{
+        // get numero de causas
+        user_search_query_data.actor.cedulaActor = cedula
+        // check if there are any entries
+        let numero_de_causas_como_actor = await contar_causas(user_search_query_data)
+        let was_actor_causas_scraped;
+        if( numero_de_causas_como_actor > 0 ){
+            // query every cause
+            let causes = await buscar_causas(user_search_query_data);
+            // scrap each causa
+            was_actor_causas_scraped = await scrap_causa(causes);
+        }else 
+            was_actor_causas_scraped = true;
+        // switch between actor and demandado
+        user_search_query_data.actor.cedulaActor = ''
+        user_search_query_data.demandado.cedulaDemandado = cedula
+        // check if there are any entries
+        let causas_como_demandado_encontradas = await contar_causas(user_search_query_data)
+        let was_demandado_causas_scraped;
+        if( causas_como_demandado_encontradas > 0 ){
+            // query every cause
+            let causes = await buscar_causas(user_search_query_data)
+            // scrap each causa
+            was_demandado_causas_scraped = await scrap_causa(causes)
+        }else 
+            was_demandado_causas_scraped = true;
+        // check if we have scrapped all the causes
+        if( was_actor_causas_scraped && was_demandado_causas_scraped ){
+            cedulas_checklist.check(cedula, { cedula, was_actor_causas_scraped, was_demandado_causas_scraped })
+        }
+        // get next entry
+        cedula = cedulas_checklist.next();
+        // wait for short 
+        //await waitForShortTime();
+    }catch(e){
+        console.error(e)
+        // get next entry
+        cedula = cedulas_checklist.next();
     }
-    // get next entry
-    cedula = cedulas_checklist.next();
-    // wait for short 
-    //await waitForShortTime();
 }
 
 
