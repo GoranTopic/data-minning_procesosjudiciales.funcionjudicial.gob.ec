@@ -146,7 +146,7 @@ while(cedula) {
         cedula = cedulas_checklist.next();
         // wait for short 
         //await waitForShortTime();
-        console.log('done:', cedulasDone, 'of', cedulas_len);
+        console.log('done:', cedulasDone++, 'of', cedulas_len--);
     }catch(e){
         console.error(e)
         // get next entry
