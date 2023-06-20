@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^1.4.0",
-    "checklist-js": "^1.1.8",
+    "checklist-js": "^1.1.9",
     "crawlee": "^3.4.0",
     "csv-parser": "^3.0.0"
   }

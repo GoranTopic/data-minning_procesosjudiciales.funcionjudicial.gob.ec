@@ -29,7 +29,8 @@ cedulas = cedulas.map(cedula => {
         console.error('cedula does not have 10 digits', cedula)
 })
 */
-console.log('numero cedulas', cedulas.length);
+let cedulas_len = cedulas.length
+console.log('numero cedulas', cedulas_len);
 console.log('making checklist...');
 let cedulas_checklist = new Checklist( cedulas, { 
     name: 'cedulas_checklist',
@@ -37,8 +38,11 @@ let cedulas_checklist = new Checklist( cedulas, {
     recalc_on_check: false,
     save_every_check: 500,
 });
-//cedulas_checklist.delete();
 console.log('done');
+let cedulasDone = cedulas_checklist.valuesDone()
+console.log('cedulasDone', cedulasDone.length);
+
+
 
 let user_search_query_data = {
 "numeroCausa" : "",
@@ -142,10 +146,13 @@ while(cedula) {
         cedula = cedulas_checklist.next();
         // wait for short 
         //await waitForShortTime();
+        console.log('done:', 
     }catch(e){
         console.error(e)
         // get next entry
         cedula = cedulas_checklist.next();
+        // save the checklist
+        cedulas_checklist.save();
     }
 }
 
