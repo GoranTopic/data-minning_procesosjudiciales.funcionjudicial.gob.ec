@@ -11,7 +11,7 @@ import ProxyRotator from 'proxy-rotator-js'
 import Axios from 'axios';
 
 
-const cedulasFilePath = './storage/cedulas/cneids_sample.csv';
+const cedulasFilePath = './storage/cedulas/cneids.csv';
 let proxyFilePath = './storage/proxies/proxyscrape_premium_http_proxies.txt';
 
 let cedulas = await readCSV(cedulasFilePath)
