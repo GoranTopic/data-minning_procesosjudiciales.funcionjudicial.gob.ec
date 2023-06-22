@@ -6,7 +6,8 @@ let endpoint = api_endpoint + '/getInformacionJuicio/';
 /* @param {string} judicaturaId: id de la judicatura
  *  @return: {array} arreglo de objetos con la informacion de las actuaciones judiciales
  */
-export default async judicaturaId => {
+export default async (judicaturaId, axiosInstance) => {
+    let axios = axiosInstance || axios;
     judicaturaId = judicaturaId.trim();
     try {
         const res = await axios.get(endpoint + '/' + judicaturaId);

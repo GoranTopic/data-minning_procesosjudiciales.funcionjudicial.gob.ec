@@ -4,9 +4,10 @@ import { api_endpoint } from '../../config/endpoints.js';
 let endpoint =  api_endpoint + '/contarCausas';
 
 /* @param causa: objeto con los datos de la causa a buscar
- *{"numeroCausa":"","actor":{"cedulaActor":"","nombreActor":""},"demandado":{"cedulaDemandado":"","nombreDemandado":"TOMISLAV TOPIC"},"provincia":"","numeroFiscalia":"","recaptcha":""}
+ *{"numeroCausa":"","actor":{"cedulaActor":"","nombreActor":""},"demandado":{"cedulaDemandado":"","nombreDemandado":""},"provincia":"","numeroFiscalia":"","recaptcha":""}
  *  @return: objeto con los datos de la causa */
-export default async causa => {
+export default async (causa, axiosInstance) => {
+    let axios = axiosInstance || axios;
     try {
         const res = await axios.post(endpoint, causa);
         return res.data;
