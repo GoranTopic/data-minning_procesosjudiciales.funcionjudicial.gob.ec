@@ -111,8 +111,10 @@ const scrap_causa = async (causas, axiosInstance) => {
             })
         })
         causa.incidentes = incidentes
+        // clean idJuicio, som id com with * character. I am replacing it with capital S1
+        let id = causa.idJuicio.trim().replace('*', 'S1')
         // save in storage key value
-        await causas_db.setValue(causa.idJuicio.trim(), causa);
+        await causas_db.setValue(id, causa);
         // scape the cause
         cedulas_checklist.check(idJuicio)
         console.log('causa scraped')
