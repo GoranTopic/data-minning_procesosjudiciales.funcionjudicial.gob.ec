@@ -9,7 +9,7 @@ import { waitForShortTime, waitForLongTime } from '../src/utils/timers.js';
 import readCSV from '../src/utils/readCSV.js';
 import ProxyRotator from 'proxy-rotator-js'
 import Axios from 'axios';
-
+import UserAgent from 'user-agents';
 
 const cedulasFilePath = './storage/cedulas/cneids.csv';
 let proxyFilePath = './storage/proxies/proxyscrape_premium_http_proxies.txt';
@@ -126,12 +126,19 @@ const scrap_causa = async (causas, axiosInstance) => {
 // next values
 let cedula = cedulas_checklist.next()
 let proxy =  proxyRotator.next();
-console.log('proxy', proxy);
+let userAgent = new UserAgent();
 
 while(cedula) {
     try{
         // make an axios instance
-        let axios = Axios.create({ proxy: { protocol: proxy.protocol, host: proxy.ip, port: proxy.port } });
+        let axios = Axios.create({ 
+            proxy: { 
+                protocol: proxy.protocol,
+                host: proxy.ip, 
+                port: proxy.port 
+            },
+            userAgent: userAgent.toString(),
+        });
         // get numero de causas
         user_search_query_data.actor.cedulaActor = cedula
         // check if there are any entries
