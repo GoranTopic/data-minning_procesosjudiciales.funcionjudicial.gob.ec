@@ -6,7 +6,7 @@ import fs from 'fs';
 // path where to fins the files needed
 const cedulasFilePath 
     //= './storage/cedulas/cedulas.txt';
-    = './storage/cedulas/cedulas.txt.sample';
+    = './storage/cedulas/cedulas.txt';
 let proxyFilePath 
     = './storage/proxies/proxyscrape_premium_http_proxies.txt';
 

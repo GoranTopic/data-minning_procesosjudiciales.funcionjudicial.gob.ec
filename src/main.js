@@ -5,7 +5,6 @@ import UserAgent from 'user-agents';
 import slavery from 'slavery-js';
 import { performance } from 'perf_hooks'
 
-
 let get_next_values = ({ cedulas_checklist, proxyRotator }) => {
     /* next value from the proxies, user agents and cedulas */
     // get next cedula
@@ -23,7 +22,6 @@ let master_function = async master => {
     // code to be run by the master
     let { cedulas_checklist, proxyRotator, cedulas_db } 
         = await init();
-    const start = performance.now();
     // get next values
     let { cedula, proxy, userAgent } = get_next_values(
         { cedulas_checklist, proxyRotator }
@@ -55,10 +53,9 @@ let master_function = async master => {
         proxy = values.proxy;
         userAgent = values.userAgent;
         console.log('[master] next cedula', cedula);
+	
     }
     console.log('[master] all cedulas checked');
-    const end = performance.now();
-    console.log('[master] time elapsed', (end - start)/1000, 'seconds');
 }
 
 let slave_function = async ({ cedula, proxy, userAgent }, slave) => {
@@ -72,6 +69,7 @@ let slave_function = async ({ cedula, proxy, userAgent }, slave) => {
 
 slavery({ 
     //numberOfSlaves: 2
+	host: '192.168.50.143',
     port : 3000,
     debug: false,
 }).master(
