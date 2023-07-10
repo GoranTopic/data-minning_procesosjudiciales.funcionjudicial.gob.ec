@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node --max-old-space-size=8192 ./src/main.js"
+    "start": "node --max-old-space-size=8192 ./src/main.js",
     "slave": "node ./src/main_slaves.js"
   },
   "author": "Goran Topic",
