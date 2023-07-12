@@ -1,7 +1,6 @@
 import slavery from 'slavery-js';
 import scrap_cedula from './scraper/scrap_cedula.js';
 
-
 let slave_function = async ({ cedula, proxy, userAgent }, slave) => {
     // code to be run by the slave 
     let log = message => console.log( '[' + slave.id +'] ' + message );
