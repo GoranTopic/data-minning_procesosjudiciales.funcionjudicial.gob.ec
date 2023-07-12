@@ -1,9 +1,7 @@
 import init from './init.js';
 import scrap_cedula from './scraper/scrap_cedula.js';
-import Axios from 'axios';
 import UserAgent from 'user-agents';
 import slavery from 'slavery-js';
-import { performance } from 'perf_hooks'
 
 let get_next_values = ({ cedulas_checklist, proxyRotator }) => {
     /* next value from the proxies, user agents and cedulas */

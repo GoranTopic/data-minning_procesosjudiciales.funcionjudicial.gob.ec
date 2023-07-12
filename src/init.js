@@ -9,8 +9,13 @@ const cedulasFilePath
     = './storage/cedulas/cedulas.txt';
 let proxyFilePath 
     = './storage/proxies/proxyscrape_premium_http_proxies.txt';
+let db_name = 'cedulas';
 
-let init = async () => {
+let init = async (options) => {
+    if(!options) options = {};
+    if(options.cedulasFilePath) cedulasFilePath = options.cedulasFilePath;
+    if(options.proxyFilePath) proxyFilePath = options.proxyFilePath;
+    if(options.db_name) db_name = options.db_name;
     /* initilize objects */
     process.stdout.write('reading cedulas file...');
     // read content fo text file
@@ -41,7 +46,7 @@ let init = async () => {
     console.log('done');
     process.stdout.write('making causas db...');
     // Open a named key-value store
-    const cedulas_db = await KeyValueStore.open('cedulas');
+    const cedulas_db = await KeyValueStore.open(db_name);
     // retun initiliazed objects
     console.log('done');
     return { cedulas_checklist, proxyRotator, cedulas_db };
