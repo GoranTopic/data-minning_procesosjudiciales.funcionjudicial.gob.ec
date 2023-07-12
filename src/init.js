@@ -25,7 +25,7 @@ let init = async () => {
         name: 'cedulas_checklist',
         path: process.cwd() + '/storage/',
         recalc_on_check: false,
-        save_every_check: 1,
+        save_every_check: 500,
     });
     console.log('done');
     let cedulasDone = cedulas_checklist.valuesDone();

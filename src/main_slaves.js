@@ -1,6 +1,5 @@
 import slavery from 'slavery-js';
-
-	
+import scrap_cedula from './scraper/scrap_cedula.js';
 
 let slave_function = async ({ cedula, proxy, userAgent }, slave) => {
     // code to be run by the slave 
@@ -12,9 +11,8 @@ let slave_function = async ({ cedula, proxy, userAgent }, slave) => {
 }
 
 slavery({ 
-    //numberOfSlaves: 2
-    host: '192.168.50.143',
-    port : 3000,
+    host: '192.168.50.132',
+    port : 3003,
     debug: false,
 }).slave(
     slave_function
