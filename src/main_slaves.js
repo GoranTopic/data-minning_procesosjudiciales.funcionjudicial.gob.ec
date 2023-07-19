@@ -1,6 +1,11 @@
 import slavery from 'slavery-js';
 import scrap_cedula from './scraper/scrap_cedula.js';
 
+import process from 'node:process'
+process.on('unhandledRejection', (reason, promise) => {
+    console.warn('Unhandled promise rejection:', promise, 'reason:', reason.stack || reason);
+});
+
 let slave_function = async ({ cedula, proxy, userAgent }, slave) => {
     // code to be run by the slave 
     let log = message => console.log( '[' + slave.id +'] ' + message );
@@ -11,6 +16,7 @@ let slave_function = async ({ cedula, proxy, userAgent }, slave) => {
 }
 
 slavery({ 
+	numberOfSlaves: 1,
     host: '192.168.50.132',
     port : 3003,
     debug: false,

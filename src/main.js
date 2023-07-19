@@ -17,9 +17,14 @@ let get_next_values = ({ cedulas_checklist, proxyRotator }) => {
 
 let master_function = async master => {
 	await master.connected();  
+	// options file to use
+	let options = { 
+		cedulasFilePath: './storage/cedulas/cedulas_01.txt',
+		db_name: 'cedulas_01'
+	}
 	// code to be run by the master
 	let { cedulas_checklist, proxyRotator, cedulas_db } 
-		= await init();
+		= await init(options);
 	// get next values
 	let { cedula, proxy, userAgent } = get_next_values(
 		{ cedulas_checklist, proxyRotator }
@@ -29,7 +34,8 @@ let master_function = async master => {
 		// get a idle slave
 		console.log('[master] awating to get idelslave')
 		let slave = await master.getIdle();
-		master.printStatus()
+		let s= master.status()
+		console.log('[master]', s)
 		// send the slave to work
 		slave.run( { cedula, proxy, userAgent } )
 			.then( async result => {
