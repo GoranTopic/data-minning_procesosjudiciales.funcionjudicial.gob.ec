@@ -16,12 +16,13 @@ let slave_function = async ({ cedula, proxy, userAgent }, slave) => {
 }
 
 slavery({ 
-	numberOfSlaves: 1,
-    host: '192.168.50.132',
-    port : 3003,
-    debug: false,
+	//numberOfSlaves: 1,
+	// timeout: 1000 * 60 * 30, // 30 minutes
+	host: '192.168.50.132',
+	port : 3003,
+	debug: false,
 }).slave(
-    slave_function
+	slave_function
 )
 
 

@@ -7,13 +7,17 @@ let endpoint =  api_endpoint + 'contarCausas';
  * {"numeroCausa":"","actor":{"cedulaActor":"","nombreActor":""},"demandado":{"cedulaDemandado":"","nombreDemandado":""},"provincia":"","numeroFiscalia":"","recaptcha":""}
  *  @return: objeto con los datos de la causa */
 export default async (causa, axiosInstance) => {
-    let axios = axiosInstance || axios;
-    try {
-        const res = await axios.post(endpoint, causa);
-        return res.data;
-    } catch (error) {
-        // print only error message
-        throw error.response.data;
+	let axios = axiosInstance || axios;
+	try {
+		const res = await axios.post(endpoint, causa);
+		if( res === undefined ){
+			console.error('respose from contar causas is empty', res);
+			throw new Error('respose from contar causas is empty');
+		}
+		return res.data;
+	} catch (error) {
+		// print only error message
+		throw error.response.data;
 
     }
 }
