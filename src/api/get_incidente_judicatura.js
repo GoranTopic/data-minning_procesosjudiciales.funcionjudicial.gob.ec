@@ -1,5 +1,5 @@
 import axios from 'axios'; 
-import { api_endpoint } from '../../config/endpoints.js';
+import { api_endpoint } from './endpoints.js';
 
 let endpoint = api_endpoint + '/getIncidenteJudicatura';
 

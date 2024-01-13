@@ -28,7 +28,7 @@ let init = async (options) => {
     process.stdout.write('making checklist...');
     let cedulas_checklist = new Checklist( cedulas, { 
         name: 'cedulas_checklist',
-        path: process.cwd() + '/storage/',
+        path: process.cwd() + '/storage/checklists/',
         recalc_on_check: false,
         save_every_check: 1,
     });

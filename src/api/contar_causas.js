@@ -1,5 +1,5 @@
 import axios from 'axios'; 
-import { api_endpoint } from '../../config/endpoints.js';
+import { api_endpoint } from './endpoints.js';
 
 let endpoint =  api_endpoint + 'contarCausas';
 
@@ -12,8 +12,8 @@ export default async (causa, axiosInstance) => {
         const res = await axios.post(endpoint, causa);
         return res.data;
     } catch (error) {
+        console.log(error);
         // print only error message
         throw error.response.data;
-
     }
 }
