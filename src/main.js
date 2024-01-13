@@ -98,8 +98,9 @@ let master_function = async master => {
 	await master.connected();  
 	// options file to use
 	let options = { 
-		cedulasFilePath: './storage/cedulas/cedulas_01.txt',
-		db_name: 'cedulas_01'
+		cedulasFilePath: './storage/cedulas/cedulas_09.txt',
+		db_name: 'cedulas_09', // up to 30
+		save_every_check: 1, 
 	}
 	// code to be run by the master
 	let { cedulas_checklist, proxyRotator, cedulas_db } 
@@ -113,8 +114,7 @@ let master_function = async master => {
 		// get a idle slave
 		console.log('[master] awating to get idelslave')
 		let slave = await master.getIdle();
-		let s= master.status()
-		console.log('[master]', s)
+		console.log('[master] status:', master.status())
 		// send the slave to work
 		slave.run( { cedula, proxy, userAgent } )
 			.then( async result => {
@@ -139,6 +139,8 @@ let master_function = async master => {
 		cedula = values.cedula;
 		proxy = values.proxy;
 		userAgent = values.userAgent;
+		// how many value have been checked and how many to go
+		console.log(`Done: ${cedulas_checklist.valuesDone()}/${cedulas_checklist.missingLeft()}`);
 	}
 	console.log('[master] all cedulas checked');
 }
@@ -154,12 +156,13 @@ let slave_function = async ({ cedula, proxy, userAgent }, slave) => {
 
 
 slavery({ 
+	timeout: 1000 * 60 * 30, // 30 minutes
 	host: '192.168.50.132',
 	port : 3003,
 }).master(
 	master_function
 )
-.slave(
+/*	.slave(
 	slave_function
 ) 
 */
