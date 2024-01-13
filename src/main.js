@@ -50,15 +50,14 @@ let checklist = new Checklist(cedulas, {
     path: './storage/checklists/',
     name: `cedulas_${cedula_prefix}`,
 });
-// get new cedula                                                                                                                                                                                                           
+// get new cedula
 // check every ceduula found in the checklist
-
 
 let get_next_values = () => {
     // get next cedula
     let cedula = checklist.next()
     // get next proxy
-    let proxy =  proxies.next();
+    let proxy = null;//proxies.next();
     // get next user agent
     let userAgent = new UserAgent().toString();
     // return the values
@@ -68,22 +67,25 @@ let get_next_values = () => {
 // get next values
 let [ cedula, proxy, userAgent ] = get_next_values();
 
+let log = str => console.log(`[${proxy? proxy.ip:null}] [${cedula}] ${str}`);
+
 // while there are cedulas to scrap
 while (cedula !== undefined) {
     // get a idle slave
-    console.log(`[${proxy.ip}] scraping cedula: ${cedula}`);
-    let result = await scrap_cedula(cedula, proxy, userAgent, console.log);
+    log = str => console.log(`[${proxy? proxy.ip:null}] [${cedula}] ${str}`);
+    log('scraping cedula')
+    let result = await scrap_cedula(cedula, proxy, userAgent, log );
     // return the result
     if (result) {
         let cedula = result.cedula;
         // check of the check list
-        console.log(`[${proxy.ip}] checking cedula: ${cedula}`);
+        log('checking cedula');
         checklist.check(cedula);
-        console.log(`[${proxy.ip}] saving cedula in db: ${cedula}`);
+        log('saving cedula in db');
         await store.push(cedula, result);
     } else {
-        console.log(`[${proxy.ip}] no result for cedula: ${cedula}`);
-        console.log(result);
+        log('cedula not found');
+        log(result);
     }
 
     [ cedula, proxy, userAgent ] = get_next_values();

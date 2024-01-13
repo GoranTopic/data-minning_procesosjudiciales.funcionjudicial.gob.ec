@@ -37,7 +37,7 @@ let make_axios_instance = ( proxy, userAgent ) => {
     return axios;
 }
 
-let scrap_cedula = async ( cedula, proxy, userAgent, log ) => {
+let scrap_cedula = async (cedula, proxy, userAgent, log) => {
     // make an axios instance
     let axios = make_axios_instance( proxy, userAgent )
     // get numero de causas
@@ -74,7 +74,7 @@ let scrap_cedula = async ( cedula, proxy, userAgent, log ) => {
         causas_demandado_scraped = true;
     // check if we have scrapped all the causes
     if( causas_actor_scraped && causas_demandado_scraped ){
-        log( `cedula ${cedula} scraped` )
+        log(`cedula scraped`)
         return { cedula, causas_actor_scraped, causas_demandado_scraped }
     } else 
         return false;
