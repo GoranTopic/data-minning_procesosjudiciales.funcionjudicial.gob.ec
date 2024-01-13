@@ -3,17 +3,6 @@ import scrap_cedula from './scraper/scrap_cedula.js';
 import UserAgent from 'user-agents';
 import slavery from 'slavery-js';
 
-let get_next_values = ({ cedulas_checklist, proxyRotator }) => {
-    /* next value from the proxies, user agents and cedulas */
-    // get next cedula
-    let cedula = cedulas_checklist.next()
-    // get next proxy
-    let proxy =  proxyRotator.next();
-    // get next user agent
-    let userAgent = new UserAgent().toString();
-    // return the values
-    return { cedula, proxy, userAgent };
-}
 
 let master_function = async master => {
 	await master.connected();  
@@ -82,5 +71,4 @@ slavery({
 /*	.slave(
 	slave_function
 ) */
-
 

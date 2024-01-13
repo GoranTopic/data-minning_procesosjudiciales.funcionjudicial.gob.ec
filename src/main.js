@@ -15,7 +15,9 @@ if (!cedula_prefix) {
     process.exit(1);
 }
 // create proxy rotator
-let proxies = new ProxyRotator('./storage/proxies/proxyscrape_premium_http_proxies.txt');
+let proxies = new ProxyRotator('./storage/proxies/proxyscrape_premium_http_proxies.txt', {
+    returnAs: 'object',
+})
 // open the key value store
 let cedulas = fs.readFileSync(`./storage/cedulas/${cedula_prefix}.txt`, 'utf8').split('\n');
 console.log(`cedulas to scrap: ${cedulas.length}`);
@@ -40,7 +42,7 @@ console.log(`cedulas to scrap: ${cedulas.length}`);
 // make directory
 console.log(`store opened: procesos_${cedula_prefix}`);                                                                                                                                                              
 try{                                                                                                                                                                                                                        
-	fs.mkdirSync(`./storage/checklists`);                                                                                                                                                                                   
+    fs.mkdirSync(`./storage/checklists`);                                                                                                                                                                                   
 }catch(e){}                                                                                                                                                                                                                 
 
 // create checklist                                                                                                                                                                                                         
@@ -66,24 +68,21 @@ let get_next_values = () => {
 // get next values
 let [ cedula, proxy, userAgent ] = get_next_values();
 
-console.log(cedula);
-
 // while there are cedulas to scrap
 while (cedula !== undefined) {
     // get a idle slave
-    console.log(proxy);
-    let result = await scrap_cedula(cedula, null, userAgent, console.log);
+    console.log(`[${proxy.ip}] scraping cedula: ${cedula}`);
+    let result = await scrap_cedula(cedula, proxy, userAgent, console.log);
     // return the result
     if (result) {
         let cedula = result.cedula;
         // check of the check list
-        console.log('checking cedula')
+        console.log(`[${proxy.ip}] checking cedula: ${cedula}`);
         checklist.check(cedula);
-        console.log('storin cedula', cedula);
-        // save into the db
+        console.log(`[${proxy.ip}] saving cedula in db: ${cedula}`);
         await store.push(cedula, result);
     } else {
-        console.log('cedula error');
+        console.log(`[${proxy.ip}] no result for cedula: ${cedula}`);
         console.log(result);
     }
 
@@ -95,54 +94,54 @@ while (cedula !== undefined) {
 
 /*
 let master_function = async master => {
-	await master.connected();  
-	// options file to use
-	let options = { 
-		cedulasFilePath: './storage/cedulas/cedulas_09.txt',
-		db_name: 'cedulas_09', // up to 30
-		save_every_check: 1, 
-	}
-	// code to be run by the master
-	let { cedulas_checklist, proxyRotator, cedulas_db } 
-		= await init(options);
-	// get next values
-	let { cedula, proxy, userAgent } = get_next_values(
-		{ cedulas_checklist, proxyRotator }
-	);
-	// while there are cedulas to scrap
-	while( cedula !== undefined ){
-		// get a idle slave
-		console.log('[master] awating to get idelslave')
-		let slave = await master.getIdle();
-		console.log('[master] status:', master.status())
-		// send the slave to work
-		slave.run( { cedula, proxy, userAgent } )
-			.then( async result => {
-				if( result ){
-					let cedula = result.cedula;
-					// check of the check list
-					console.log('[master] checking cedula')
-					cedulas_checklist.check(cedula);
-					console.log('[master] saving cedula in db')
-					// save into the db
-					await cedulas_db.setValue(cedula, result);
-				}
-			})
-			.catch( e => {
-				console.error(e)
-			} )
-		// get next values, changet to deconstructor
-		let values = get_next_values(   
-			{ cedulas_checklist, proxyRotator }
-		);
-		console.log('[master] getting next values')
-		cedula = values.cedula;
-		proxy = values.proxy;
-		userAgent = values.userAgent;
-		// how many value have been checked and how many to go
-		console.log(`Done: ${cedulas_checklist.valuesDone()}/${cedulas_checklist.missingLeft()}`);
-	}
-	console.log('[master] all cedulas checked');
+    await master.connected();  
+    // options file to use
+    let options = { 
+        cedulasFilePath: './storage/cedulas/cedulas_09.txt',
+        db_name: 'cedulas_09', // up to 30
+        save_every_check: 1, 
+    }
+    // code to be run by the master
+    let { cedulas_checklist, proxyRotator, cedulas_db } 
+        = await init(options);
+    // get next values
+    let { cedula, proxy, userAgent } = get_next_values(
+        { cedulas_checklist, proxyRotator }
+    );
+    // while there are cedulas to scrap
+    while( cedula !== undefined ){
+        // get a idle slave
+        console.log('[master] awating to get idelslave')
+        let slave = await master.getIdle();
+        console.log('[master] status:', master.status())
+        // send the slave to work
+        slave.run( { cedula, proxy, userAgent } )
+            .then( async result => {
+                if( result ){
+                    let cedula = result.cedula;
+                    // check of the check list
+                    console.log('[master] checking cedula')
+                    cedulas_checklist.check(cedula);
+                    console.log('[master] saving cedula in db')
+                    // save into the db
+                    await cedulas_db.setValue(cedula, result);
+                }
+            })
+            .catch( e => {
+                console.error(e)
+            } )
+        // get next values, changet to deconstructor
+        let values = get_next_values(   
+            { cedulas_checklist, proxyRotator }
+        );
+        console.log('[master] getting next values')
+        cedula = values.cedula;
+        proxy = values.proxy;
+        userAgent = values.userAgent;
+        // how many value have been checked and how many to go
+        console.log(`Done: ${cedulas_checklist.valuesDone()}/${cedulas_checklist.missingLeft()}`);
+    }
+    console.log('[master] all cedulas checked');
 }
 
 let slave_function = async ({ cedula, proxy, userAgent }, slave) => {
@@ -156,13 +155,13 @@ let slave_function = async ({ cedula, proxy, userAgent }, slave) => {
 
 
 slavery({ 
-	timeout: 1000 * 60 * 30, // 30 minutes
-	host: '192.168.50.132',
-	port : 3003,
+    timeout: 1000 * 60 * 30, // 30 minutes
+    host: '192.168.50.132',
+    port : 3003,
 }).master(
-	master_function
+    master_function
 )
 /*	.slave(
-	slave_function
+    slave_function
 ) 
 */
