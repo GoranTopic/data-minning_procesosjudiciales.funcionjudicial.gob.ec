@@ -4,7 +4,7 @@ import get_incidente_judicatura from '../api/get_incidente_judicatura.js';
 import get_informacion_juicio from '../api/get_informacion_juicio.js';
 
 /* scrap the causes */
-const scrap_causa = async (causas, axios, log) => {
+const scrap_causa = async (causas, axios_instance, log) => {
     // number of scrapped causas
     let causasIds = causas.map( causa => causa.idJuicio )
     let cedulas_checklist = new Checklist( causasIds );
@@ -14,12 +14,12 @@ const scrap_causa = async (causas, axios, log) => {
         let idJuicio = causa.idJuicio;
         //console.log('causa', causa);
         //await waitForShortTime();
-        let jucio_info = await get_informacion_juicio(idJuicio, axios)
+        let jucio_info = await get_informacion_juicio(idJuicio, axios_instance);
         // overwrite the cause if it is null
         for(let key in jucio_info)
             causa[key] = (causa[key]) ? causa[key] : jucio_info[key]
         //console.log('jucio_info', jucio_info);
-        let incidentes = await get_incidente_judicatura(idJuicio, axios)
+        let incidentes = await get_incidente_judicatura(idJuicio, axios_instance);
         //console.log('incidentes', incidentes);
         incidentes.forEach(async incidente => {
             let { idJudicatura, 
@@ -36,7 +36,7 @@ const scrap_causa = async (causas, axios, log) => {
                     aplicativo : "web", 
                     nombreJudicatura }
                 //await waitForShortTime()
-                let actuaciones = await actuaciones_judiciales(params, axios)
+                let actuaciones = await actuaciones_judiciales(params, axios_instance);
                 //console.log('actuaciones', actuaciones);
                 incidente.actuaciones_judiciales = actuaciones
             })

@@ -3,7 +3,7 @@ import slavery from 'slavery-js';
 
 
 slavery({
-	numberOfSlaves: 20,
+	numberOfSlaves: 1,
 	host: 'localhost',
 	port: 3003,
 }).slave(async ({ cedula, proxy, userAgent }, slave) => {

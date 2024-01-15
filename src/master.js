@@ -51,11 +51,10 @@ slavery({
 	// create checklist                                                                                                                                                                                                         
 	let checklist = new Checklist(cedulas, {
 		path: './storage/checklists/',
-		name: `cedulas_${cedula_prefix}`,
 	});
 
 	let cedula = checklist.next()
-	let proxy = null;//proxies.next();
+	let proxy = proxies.next();
 	let userAgent = new UserAgent().toString();
 	let log = str => console.log(`[Master][${proxy ? proxy.ip : null}][${cedula}] ${str}`);
 
@@ -68,9 +67,9 @@ slavery({
 			.then(async result => {
 				if (result) {
 					let cedula = result.cedula;
-					log = str => console.log(`[Master][${proxy ? proxy.ip : null}][${cedula}] ${str}`);
+					let log = str => console.log(`[Master][${proxy ? proxy.ip : null}][${cedula}] ${str}`);
 					// check of the check list
-					log('checking cedula');
+					log(`checking cedulas ${cedulas.length}/${checklist.missingLeft()} left}`);
 					checklist.check(cedula);
 					log('saving cedula in db');
 					await store.push(cedula, result);
@@ -84,7 +83,7 @@ slavery({
 			})
 		// get next values, changet to deconstructor
 		cedula = checklist.next()
-		proxy = null;//proxies.next();
+		proxy = proxies.next();
 		userAgent = new UserAgent().toString();
 		log = str => console.log(`[Master][${proxy ? proxy.ip : null}][${cedula}] ${str}`);
 	}

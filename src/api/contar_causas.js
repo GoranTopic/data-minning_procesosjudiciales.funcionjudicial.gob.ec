@@ -17,7 +17,7 @@ export default async (causa, axiosInstance) => {
 		return res.data;
 	} catch (error) {
 		// print only error message
-		throw error.response.data;
+		throw error.response;
 
     }
 }
