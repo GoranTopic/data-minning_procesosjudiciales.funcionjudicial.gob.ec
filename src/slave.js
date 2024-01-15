@@ -1,9 +1,8 @@
 import scrap_cedula from './scraper/scrap_cedula.js';
 import slavery from 'slavery-js';
 
-
 slavery({
-	numberOfSlaves: 1,
+	numberOfSlaves: 100,
 	host: 'localhost',
 	port: 3003,
 }).slave(async ({ cedula, proxy, userAgent }, slave) => {
