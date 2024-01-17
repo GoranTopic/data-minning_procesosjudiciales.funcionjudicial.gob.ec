@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^1.6.5",
+    "axios-https-proxy-fix": "^0.17.1",
     "checklist-js": "^1.1.11",
     "crawlee": "^3.4.0",
     "csv-parser": "^3.0.0",

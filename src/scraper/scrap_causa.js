@@ -2,6 +2,7 @@ import Checklist from 'checklist-js';
 import actuaciones_judiciales from '../api/actuaciones_judiciales.js';
 import get_incidente_judicatura from '../api/get_incidente_judicatura.js';
 import get_informacion_juicio from '../api/get_informacion_juicio.js';
+import { waitForShortTime } from '../utils/timers.js';
 
 /* scrap the causes */
 const scrap_causa = async (causas, axios_instance, log) => {
@@ -13,7 +14,7 @@ const scrap_causa = async (causas, axios_instance, log) => {
     for(let causa of causas){
         let idJuicio = causa.idJuicio;
         //console.log('causa', causa);
-        //await waitForShortTime();
+        await waitForShortTime();
         let jucio_info = await get_informacion_juicio(idJuicio, axios_instance);
         // overwrite the cause if it is null
         for(let key in jucio_info)
