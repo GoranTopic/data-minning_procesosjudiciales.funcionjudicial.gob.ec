@@ -7,7 +7,7 @@ import Storage from 'storing-me'
 import fs from 'fs';
 
 slavery({
-	timeout: 1000 * 60 * 5, // 1 minute
+	timeout: 1000 * 60 * 7, // 7 minute
 	host: 'localhost',
 	port: 3003,
 }).master(async master => {
