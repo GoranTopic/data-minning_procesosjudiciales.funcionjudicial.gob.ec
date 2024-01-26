@@ -55,19 +55,14 @@ let checklist = new Checklist(cedulas, {
 // get new cedula
 // check every ceduula found in the checklist
 
-let get_next_values = () => {
-    // get next cedula
-    let cedula = checklist.next()
-    // get next proxy
-    let proxy = proxies.next();
-    // get next user agent
-    let userAgent = new UserAgent().toString();
-    // return the values
-    return [ cedula, proxy, userAgent ]
-}
 
-// get next values
-let [ cedula, proxy, userAgent ] = get_next_values();
+// get next cedula
+let cedula = checklist.next()
+// get next proxy
+let proxy = proxies.next();
+// get next user agent
+let userAgent = new UserAgent().toString();
+
 
 let log = str => console.log(`[${proxy? proxy.ip:null}] [${cedula}] ${str}`);
 
@@ -90,6 +85,11 @@ while (cedula !== undefined) {
         log(result);
     }
 
-    [ cedula, proxy, userAgent ] = get_next_values();
+    // get next cedula
+    cedula = checklist.next()
+    // get next proxy
+    //proxy = proxies.next();
+    // get next user agent
+    userAgent = new UserAgent().toString();
 
 }

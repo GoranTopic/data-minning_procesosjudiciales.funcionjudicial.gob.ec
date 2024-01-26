@@ -89,4 +89,3 @@ slavery({
 		log = str => console.log(`[Master][${proxy ? proxy.ip : null}][${cedula}] ${str}`);
 	}
 });
-

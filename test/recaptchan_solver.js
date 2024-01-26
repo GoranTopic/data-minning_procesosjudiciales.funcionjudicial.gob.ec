@@ -15,3 +15,24 @@ console.log(token);
 // genreate fake proxy
 //let token = generateToken();
 
+import { CapMonsterCloudClientFactory, ClientOptions, RecaptchaV2Request } from '@zennolab_com/capmonstercloud-client';
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const cmcClient = CapMonsterCloudClientFactory.Create(new ClientOptions({ clientKey: '<your capmonster.cloud API key>' }));
+  console.log(await cmcClient.getBalance());
+
+  const recaptchaV2Request = new RecaptchaV2Request({
+    websiteURL: 'https://lessons.zennolab.com/captchas/recaptcha/v2_simple.php?level=high',
+    websiteKey: '6Lcg7CMUAAAAANphynKgn9YAgA4tQ2KI_iqRyTwd',
+    proxyType: 'http',
+    proxyAddress: '8.8.8.8',
+    proxyPort: 8080,
+    proxyLogin: 'proxyLoginHere',
+    proxyPassword: 'proxyPasswordHere',
+    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.132 Safari/537.36',
+  });
+
+  console.log(await cmcClient.Solve(recaptchaV2Request));
+});
+
+

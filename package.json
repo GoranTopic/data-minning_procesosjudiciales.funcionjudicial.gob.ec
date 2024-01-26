@@ -12,6 +12,7 @@
   "author": "Goran Topic",
   "license": "ISC",
   "dependencies": {
+    "@zennolab_com/capmonstercloud-client": "^1.5.0",
     "axios": "^1.6.5",
     "axios-https-proxy-fix": "^0.17.1",
     "checklist-js": "^1.1.11",
