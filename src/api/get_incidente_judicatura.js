@@ -1,7 +1,7 @@
 import axios from 'axios'; 
-import { api_endpoint } from './endpoints.js';
+import { api_endpoint_clex } from './endpoints.js';
 
-let endpoint = api_endpoint + '/getIncidenteJudicatura';
+let endpoint = api_endpoint_clex + 'getIncidenteJudicatura';
 
 /* @param {string} judicaturaId: id de la judicatura
  *  @return: {array} array de objetos con las actuaciones judiciales
