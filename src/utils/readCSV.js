@@ -3,7 +3,6 @@ import csv from 'csv-parser';
 
 let readCSV = async filePath => {
     try {
-        const fileData = await fs.readFileSync(filePath, 'utf8');
         const rows = [];
         return await new Promise((resolve, reject) => {
             fs.createReadStream(filePath)
