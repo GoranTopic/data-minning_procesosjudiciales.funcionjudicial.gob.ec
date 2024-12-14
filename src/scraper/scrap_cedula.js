@@ -24,7 +24,10 @@ let make_axios_instance = ( proxy, userAgent ) => {
     // make an axios instance
     let axios = ( proxy ) ?
         Axios.create({ 
-            proxy,
+            proxy: { 
+                ...proxy,
+                protocol: 'http'
+            },
             userAgent
         }) : 
         Axios.create({
@@ -44,7 +47,7 @@ let scrap_cedula = async (cedula, proxy, userAgent, log) => {
         // check if there are any entries
         let numero_de_causas_como_actor 
             = await contar_causas(user_search_query_data, axios_instance)
-        log('got numero de causas');
+        log(`numero de causas como actor: ${numero_de_causas_como_actor}`)
         let causas_actor_scraped;
         if( numero_de_causas_como_actor > 0 ){
             // query every cause
@@ -60,6 +63,7 @@ let scrap_cedula = async (cedula, proxy, userAgent, log) => {
         // check if there are any entries
         let causas_como_demandado_encontradas 
             = await contar_causas(user_search_query_data, axios_instance)
+        log(`numero de causas como demandado: ${causas_como_demandado_encontradas}`)
         let causas_demandado_scraped = [];
         if( causas_como_demandado_encontradas > 0 ){
             // query every cause
@@ -73,12 +77,15 @@ let scrap_cedula = async (cedula, proxy, userAgent, log) => {
         // check if we have scrapped all the causes
         if( causas_actor_scraped && causas_demandado_scraped ){
             log(`cedula scraped`)
+            // put the data in the right format
+            if (causas_actor_scraped === true) causas_actor_scraped = []
+            if (causas_demandado_scraped === true) causas_demandado_scraped = []
+            // return the data
             return { cedula, causas_actor_scraped, causas_demandado_scraped }
         } else 
             return false;
     } catch (e) {
-        log(e)
-        return false;
+        throw e;
     }
 }
 

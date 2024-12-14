@@ -15,7 +15,7 @@ describe('Contar Causas API', () => {
     it('should return the correct data', async () => {
         try {
             const result = await actuaciones_judiciales(requestData); // Call the API function with the request data
-            console.log('API Response from Function:', result); // Log the response for visibility
+            // console.log('API Response from Function:', result); // Log the response for visibility
             // chek is result is not null
             expect(result).to.not.be.null;
             // expect the first element to be an object

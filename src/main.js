@@ -22,30 +22,31 @@ let userAgent = makeUserAgent();
 let log = str => console.log(`[${proxy? proxy.ip:null}] [${cedula}] ${str}`);
 
 // while there are cedulas to scrap
-while (cedula !== undefined) {
-    
-    // get a idle slave
-    log = str => console.log(`[${proxy? proxy.ip:null}] [${cedula}] ${str}`);
-    log('scraping cedula')
-    let result = await scrap_cedula(cedula, proxy, userAgent, log );
-    // return the result
-    if (result) {
-        let cedula = result.cedula;
-        // check of the check list
-        log('checking cedula');
-        checklist.check(cedula);
-        log('saving cedula in db');
-        await store.push(cedula, result);
-    } else {
-        log('cedula not found');
-        log(result);
-    }
+//while (cedula !== undefined) {
 
-    // get next cedula
-    cedula = checklist.next()
-    // get next proxy
-    proxy = proxies.next();
-    // get next user agent
-    userAgent = makeUserAgent();
-
+// get a idle slave
+log = str => console.log(`[${proxy? proxy.ip:null}] [${cedula}] ${str}`);
+log('scraping cedula')
+let result = await scrap_cedula(cedula, proxy, userAgent, log );
+// return the result
+if (result) {
+    let cedula = result.cedula;
+    // check of the check list
+    log('checking cedula');
+    checklist.check(cedula);
+    log('pushing to store');
+    console.log(result);
+    await store.push(result);
+} else {
+    log('cedula not found');
+    log(result);
 }
+
+// get next cedula
+cedula = checklist.next()
+// get next proxy
+proxy = proxies.next();
+// get next user agent
+userAgent = makeUserAgent();
+
+//}
