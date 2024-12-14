@@ -21,7 +21,7 @@ const scrap_causa = async (causas, axios_instance, log) => {
             causa[key] = (causa[key]) ? causa[key] : jucio_info[key]
         //console.log('jucio_info', jucio_info);
         let incidentes = await get_incidente_judicatura(idJuicio, axios_instance);
-        console.log('incidentes', incidentes);
+        log(`incidentes: ${incidentes.length}`)
         incidentes.forEach(async incidente => {
             let { idJudicatura, 
                 lstIncidenteJudicatura,

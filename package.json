@@ -6,7 +6,7 @@
   "scripts": {
     "test": "mocha './test/**/*.test.js'",
     "start": "node --max-old-space-size=8192 ./src/main.js",
-    "master": "node ./src/master.js",
+    "master": "node --max-old-space-size=8192 ./src/master.js",
     "slave": "node ./src/slave.js"
   },
   "author": "Goran Topic",
