@@ -1,7 +1,7 @@
 version: '3'
 services:
   procesosjudiciales-slave-service:
-    image: supercias
+    image: procesosjudiciales
     command: npm run slave
     network_mode: host
     restart: always
