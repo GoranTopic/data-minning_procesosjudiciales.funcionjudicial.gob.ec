@@ -1,4 +1,5 @@
 import { makeProxies } from '../src/init.js';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 import Axios from 'axios';
 import { expect } from 'chai';
 
@@ -10,8 +11,9 @@ describe('Proxy IP Test', function () {
 
         // Function to create an Axios instance
         const make_axios_instance = (proxy) => {
-            return Axios.create({
-                proxy: { ...proxy, protocol: 'http' },
+            return Axios.create({ 
+                httpsAgent: new HttpsProxyAgent({ ...proxy }),
+                proxy: false,
             });
         };
 
@@ -19,7 +21,7 @@ describe('Proxy IP Test', function () {
         const axios_instance = make_axios_instance(proxy);
 
         // Send a request and verify the proxy IP matches
-        const result = await axios_instance.post('http://httpbin.org/post', { data: 'hello' });
+        const result = await axios_instance.get('https://httpbin.org/ip');
 
         // Extract the IP used by the proxy from the response
         const originIp = result.data.origin;

@@ -3,6 +3,7 @@ import buscar_causas from '../api/buscar_causas.js';
 import contar_causas from '../api/contar_causas.js';
 import scrap_causa from './scrap_causa.js'
 import Axios from 'axios';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 
 // this is the post data fromat that the server expects
 let user_search_query_data = {
@@ -24,10 +25,8 @@ let make_axios_instance = ( proxy, userAgent ) => {
     // make an axios instance
     let axios = ( proxy ) ?
         Axios.create({ 
-            proxy: { 
-                ...proxy,
-                protocol: 'http'
-            },
+            httpsAgent: new HttpsProxyAgent({ ...proxy }),
+            proxy: false,
             userAgent
         }) : 
         Axios.create({
