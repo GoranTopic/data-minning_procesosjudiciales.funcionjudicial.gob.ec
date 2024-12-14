@@ -1,4 +1,4 @@
-import axios from 'axios'; 
+import axios_main from 'axios'; 
 import { api_endpoint } from './endpoints.js';
 
 let endpoint = api_endpoint + '/getInformacionJuicio/';
@@ -7,7 +7,7 @@ let endpoint = api_endpoint + '/getInformacionJuicio/';
  *  @return: {array} arreglo de objetos con la informacion de las actuaciones judiciales
  */
 export default async (judicaturaId, axiosInstance) => {
-    let axios = axiosInstance || axios;
+    let axios = axiosInstance || axios_main;
     judicaturaId = judicaturaId.trim();
     try {
         const res = await axios.get(endpoint + '/' + judicaturaId);

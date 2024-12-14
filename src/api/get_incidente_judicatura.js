@@ -1,4 +1,4 @@
-import axios from 'axios'; 
+import axios_main from 'axios'; 
 import { api_endpoint_clex } from './endpoints.js';
 
 let endpoint = api_endpoint_clex + 'getIncidenteJudicatura';
@@ -7,7 +7,7 @@ let endpoint = api_endpoint_clex + 'getIncidenteJudicatura';
  *  @return: {array} array de objetos con las actuaciones judiciales
  */
 export default async (judicaturaId, axiosInstance) => {
-    let axios = axiosInstance || axios;
+    let axios = axiosInstance || axios_main;
     judicaturaId = judicaturaId.trim();
     try {
         const res = await axios.get(endpoint + '/' + judicaturaId);
