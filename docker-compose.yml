@@ -8,4 +8,4 @@ services:
 
 
 # run docker compose
-# sudo docker-compose up --scale procesosjudiciales-slave-service=3
+# sudo docker compose up --scale procesosjudiciales-slave-service=3
