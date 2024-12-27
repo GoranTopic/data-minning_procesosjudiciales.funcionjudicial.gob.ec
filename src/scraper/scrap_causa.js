@@ -53,9 +53,10 @@ const scrap_causa = async (causas, axios_instance, log) => {
         cedulas_checklist.check(idJuicio)
     }
     // check if we have scrapped all of the causas
-    if(cedulas_checklist.isDone())
+    if(cedulas_checklist.isDone()){
+        cedulas_checklist.delete()
         return causas_scraped
-    else 
+    }else 
         return false
 }
 
