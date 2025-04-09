@@ -1,5 +1,5 @@
-import scrap_cedula from './scraper/scrap_cedula.js';
-import { init, 
+//import scrap_cedula from './scraper/scrap_cedula.js';
+/*import { init, 
     makeStore, makeChecklist, makeProxies, makeUserAgent
 } from './init.js';
 
@@ -47,3 +47,30 @@ while (cedula !== undefined) {
     // get next user agent
     userAgent = makeUserAgent();
 }
+*/
+
+
+
+// first let read a xlx file and print every line
+import XLSX from 'xlsx';
+const excelFile = XLSX.readFile('./files/prefijos y sufijos unqiue id_Juicios 2021 2022 y 2023.xlsx');
+const sheetName = excelFile.SheetNames[1];
+const sheet = excelFile.Sheets[sheetName];
+const data = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+console.log(data);
+// pop the first line in the array
+data.shift();
+// get the first column for 2021
+let unique_prefixes_2021 = data.map(row => row[0]);
+let unique_suffixes_2021 = data.map(row => row[1]);
+// get the first column for 2022
+let unique_prefixes_2022 = data.map(row => row[2]);
+let unique_suffixes_2022 = data.map(row => row[3]);
+// get the first column for 2023
+let unique_prefixes_2023 = data.map(row => row[4]);
+let unique_suffixes_2023 = data.map(row => row[5]);
+
+
+
+
