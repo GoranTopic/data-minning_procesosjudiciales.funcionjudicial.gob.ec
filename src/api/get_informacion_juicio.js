@@ -1,4 +1,4 @@
-import axios_main from 'axios'; 
+import axios_main from 'axios';
 import { api_endpoint } from './endpoints.js';
 
 let endpoint = api_endpoint + '/getInformacionJuicio/';

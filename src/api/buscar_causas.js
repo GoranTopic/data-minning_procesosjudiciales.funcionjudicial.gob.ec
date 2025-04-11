@@ -5,6 +5,7 @@ let size = 100;
 let page = 1;
 let endpoint =  api_endpoint + `/buscarCausas?page=${page}&size=${size}`;
 
+// El formato debe ser parecido a 99U99-9999-999999 o 99999-9999-999999 o 99999-9999-99999G para el idJuicios
 /* @param causa: objeto con los datos de la causa a buscar
  * {
  *  "numeroCausa":"",

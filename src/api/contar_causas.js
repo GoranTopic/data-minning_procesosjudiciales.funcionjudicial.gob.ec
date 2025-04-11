@@ -4,6 +4,7 @@ import { api_endpoint } from './endpoints.js';
 let endpoint =  api_endpoint + 'contarCausas';
 
 /* @param causa: objeto con los datos de la causa a buscar
+ * {
  *       "numeroCausa":"",
  *       "actor":{
  *           "cedulaActor":"",
@@ -16,7 +17,7 @@ let endpoint =  api_endpoint + 'contarCausas';
  *       "provincia":"",
  *       "numeroFiscalia":"",
  *       "recaptcha":""
- *   }
+ * }
  * @return: objeto con los datos de la causa */
 export default async (causa, axiosInstance) => {
     let axios = axiosInstance || axios_main;

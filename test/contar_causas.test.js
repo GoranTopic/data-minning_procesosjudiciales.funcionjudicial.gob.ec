@@ -2,12 +2,12 @@ import { expect } from 'chai'; // Assertion library
 import contar from '../src/api/contar_causas.js'; 
 
 // known cedula for testing
-const cedula = "";
+const cedula = "2000032306"; // Replace with a valid cedula for testing
 
 describe('Contar Causas API', () => {
 
     const requestData = {
-        "numeroCausa":"2033120140139",
+        "numeroCausa":"",
         "actor":{
             "cedulaActor": cedula,
             "nombreActor":""
@@ -29,6 +29,8 @@ describe('Contar Causas API', () => {
             expect(result).to.not.be.null;
             // ensure that the result is an number
             expect(result).to.be.a('number');
+            // to be not zero
+            expect(result).to.not.equal(0);
         } catch (error) {
             console.error('API Call Error:', error.response?.data || error.message);
             throw error; // Fail the test if an error occurs

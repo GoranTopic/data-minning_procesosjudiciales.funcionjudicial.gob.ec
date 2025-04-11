@@ -4,10 +4,10 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "test": "mocha './test/**/*.test.js'",
     "start": "node --max-old-space-size=8192 ./src/main.js",
     "master": "node --max-old-space-size=8192 ./src/master.js",
-    "slave": "node ./src/slave.js"
+    "slave": "node ./src/slave.js",
+    "test": "mocha --timeout 10000 './test/**/*.test.js'"
   },
   "author": "Goran Topic",
   "license": "ISC",
