@@ -26,7 +26,9 @@ let endpoint =  api_endpoint + `/buscarCausas?page=${page}&size=${size}`;
 export default async (causa, axiosInstance) => {
         let axios = axiosInstance || axios_main;
     try {
-        const res = await axios.post(endpoint, causa);
+        const res = await axios.post(endpoint, causa, {
+            timeout: 100000,
+        });
         return res.data;
     } catch (error) {
         console.log(error);

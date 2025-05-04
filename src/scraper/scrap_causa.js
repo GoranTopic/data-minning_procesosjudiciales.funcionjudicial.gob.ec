@@ -14,7 +14,7 @@ const scrap_causa = async (idJuicio, axios_instance) => {
         causa[key] = (causa[key]) ? causa[key] : jucio_info[key]
     //console.log('jucio_info', jucio_info);
     let incidentes = await get_incidente_judicatura(idJuicio, axios_instance);
-    log(`incidentes: ${incidentes.length}`)
+    //console.log(`incidentes: ${incidentes.length}`)
     incidentes.forEach(async incidente => {
         let { idJudicatura, 
             lstIncidenteJudicatura,
@@ -29,18 +29,21 @@ const scrap_causa = async (idJuicio, axios_instance) => {
                 idIncidenteJudicatura, 
                 aplicativo : "web", 
                 nombreJudicatura }
-            //await waitForShortTime()
+            await waitForShortTime()
             let actuaciones = await actuaciones_judiciales(params, axios_instance);
             //console.log('actuaciones', actuaciones);
             incidente.actuaciones_judiciales = actuaciones
         })
     })
+    if(causa['0'] === undefined)
+        return null
+    causa = causa['0']
     // save incidentes in causa
     causa.incidentes = incidentes
     // clean idJuicio, some id com with * character. I am replacing it with capital S1
-    let id = idJuicio.trim().replace('*', 'S1')
-    // scape the cause
-    return { id, result: causa }
+    //let id = idJuicio.trim().replace('*', 'S1')
+    // return the causa
+    return causa
 }
 
 export default scrap_causa;
