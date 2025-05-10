@@ -25,49 +25,70 @@ const makeStore = async store_name => {
     return store;
 }
 
-
 slavery({
     host: 'localhost',
     port: 3000,
+    timeout: 45 * 60 * 1000
 })
 
     .store_ids({
         '_startup': async (data, {self}) => {
-            self.client = new MongoClient(mongo_url, { useNewUrlParser: true });
+            self.client = new MongoClient(mongo_url);
             await self.client.connect();
             const db = self.client.db(mongo_database);
             self.collection = db.collection('juiciosId');
         },
         'next': async (data, {self}) => {
             // get a single juiciosId from the database with scrapped.isScrapped: false
-            let id = await self.collection.findOne({ "scrapped.isScrapped": false });
+            let id = await self.collection.findOneAndUpdate({
+                "scraped.isScraped": false,
+                "scraped.hasErrored": false,
+                "scraped.inUse": false,
+            }, {
+                $set: { "scraped.inUse": true }
+            }, {
+                returnDocument: 'after',
+            });
             if (!id) return null;
             return id.idJuicio;
         },
         'update': async (id, {self}) => {
             // update the juiciosId in the database
-            try{
-                await self.collection.updateOne({ idJuicio: id }, { $set: {
-                    "scrapped.isScrapped": true,
-                    "scrapped.hasErrored": false
-                } });
-            }catch(e){
-                console.log('error updating juiciosId: ', id);
-                console.log(e);
-            }
+            await self.collection.updateOne({ idJuicio: id }, { $set: {
+                "scraped.isScraped": true,
+                "scraped.hasErrored": false,
+                "scraped.inUse": false,
+                "scraped.timestamp": new Date(),
+                }
+            });
+        },
+        'error': async (id, {self}) => {
+            // update the juiciosId in the database
+            await self.collection.updateOne({ idJuicio: id }, { $set: {
+                "scraped.isScraped": false,
+                "scraped.hasErrored": true,
+                "scraped.inUse": false,
+                "scraped.timestamp": new Date(),
+            } });
         },
         '_cleanup': async (data, {self}) => {
             await self.client.close();
         }
-    })
+    }, { number_of_nodes: 1 })
 
     .store_causas({
         '_startup': async (data, {self}) => {
             self.causas_store = await makeStore('causas');
         },
         'push': async (data,{self}) => {
+            try{
             // push the causa to the store
             await self.causas_store.push(data);
+                // if we alerady have a recored with that id
+            }catch(e){
+                console.log(e);
+                console.log('error pushing causa: ', data.idJuicio);
+            }
         },
         '_cleanup': async (data, {self}) => {
             await self.causas_store.close();
@@ -97,34 +118,41 @@ slavery({
                     console.log('causa not scraped: ', id);
                     return false
                 }
-                console.log('saving causa: ', causa.idJuicio);
                 // save in the database
                 await store_causas.push(causa);
                 return true
             } catch (error) {
                 console.log('error scrapping causa: ', id);
-                console.log(error);
                 return false
             }
         }
     })
 
     .main( async ({ scraper, store_ids }) => {
-        let timeTaken = []; // get the last 500 times
-        setInterval(async () => {
+        console.log('scrapping all juiciosId');
+        let id = true; // start loop
+        while (id) {
+            // wait for 1 second
+            console.log('[main] getting causa: ');
             let id = await store_ids.next();
+            console.log('[main] got causa: ', id);
             // get a random id from the database
-            let start = new Date();
-            let res = await scraper.scrap_causa(id);
-            if(res) await store_ids.update(id);
-            let end = new Date();
-            let time = end - start;
-            if (timeTaken.length > 500) {
-                timeTaken.shift();
-            }else 
-                timeTaken.push({time, res});
-            console.log('time taken: ', time);
-            console.log('average time taken: ', timeTaken.reduce((a, b) => a + b.time, 0) / timeTaken.length);
-        }, 1000);
+            console.log('[main] scrapping causa: ', id);
+            scraper.scrap_causa(id)
+                .then(async (res) => {
+                    if(res === true){
+                        console.log('[main] successfully scrapped causa: ', id);
+                        await store_ids.update(id);
+                    }else{
+                        console.log('[main] error scrapping causa: ', id);
+                        await store_ids.error(id);
+                    }
+                }).catch(async (e) => {
+                    console.error('[main] error scrapping causa: ', id);
+                    console.error(e);
+                    await store_ids.error(id);
+                })
+        }
+        console.log('finished scrapping all juiciosId');
     })
 
